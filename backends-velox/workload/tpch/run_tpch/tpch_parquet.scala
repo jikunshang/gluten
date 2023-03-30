@@ -5,8 +5,8 @@ import java.util.Arrays
 import sys.process._
 
 //Configurations:
-var parquet_file_path = "/PATH/TO/TPCH_PARQUET_PATH"
-var gluten_root = "/PATH/TO/GLUTEN"
+var parquet_file_path = "/disk1/tpch-data/sf10"
+var gluten_root = "/workspace/gluten/"
 
 def time[R](block: => R): R = {
     val t0 = System.nanoTime()
@@ -17,14 +17,14 @@ def time[R](block: => R): R = {
 }
 
 //Read TPC-H Table from DWRF files
-val lineitem = spark.read.format("parquet").load("file://" + parquet_file_path + "/lineitem")
-val part = spark.read.format("parquet").load("file://" + parquet_file_path + "/part")
-val orders = spark.read.format("parquet").load("file://" + parquet_file_path + "/orders")
-val customer = spark.read.format("parquet").load("file://" + parquet_file_path + "/customer")
-val supplier = spark.read.format("parquet").load("file://" + parquet_file_path + "/supplier")
-val partsupp = spark.read.format("parquet").load("file://" + parquet_file_path + "/partsupp")
-val region = spark.read.format("parquet").load("file://" + parquet_file_path + "/region")
-val nation = spark.read.format("parquet").load("file://" + parquet_file_path + "/nation")
+val lineitem = spark.read.format("parquet").load("hdfs://" + parquet_file_path + "/lineitem")
+val part = spark.read.format("parquet").load("hdfs://" + parquet_file_path + "/part")
+val orders = spark.read.format("parquet").load("hdfs://" + parquet_file_path + "/orders")
+val customer = spark.read.format("parquet").load("hdfs://" + parquet_file_path + "/customer")
+val supplier = spark.read.format("parquet").load("hdfs://" + parquet_file_path + "/supplier")
+val partsupp = spark.read.format("parquet").load("hdfs://" + parquet_file_path + "/partsupp")
+val region = spark.read.format("parquet").load("hdfs://" + parquet_file_path + "/region")
+val nation = spark.read.format("parquet").load("hdfs://" + parquet_file_path + "/nation")
 
 //Create DWRF based TPC-H Table View
 lineitem.createOrReplaceTempView("lineitem")
@@ -66,7 +66,8 @@ for (t <- sorted) {
   println(fileContents)
   try {
     time{spark.sql(fileContents).show}
-    //spark.sql(fileContents).explain
+   
+//    spark.sql(fileContents).explain
     Thread.sleep(2000)
   } catch {
     case e: Exception => None

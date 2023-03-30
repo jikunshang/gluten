@@ -1,9 +1,9 @@
 
 batchsize=10240
-SPARK_HOME=/home/sparkuser/spark/
-spark_sql_perf_jar=/PATH/TO/spark-sql-perf_2.12-0.5.1-SNAPSHOT.jar
+SPARK_HOME=/workspace/spark/
+spark_sql_perf_jar=/workspace/jars/spark-sql-perf_2.12-0.5.1-SNAPSHOT.jar
 cat tpch_datagen_parquet.scala | ${SPARK_HOME}/bin/spark-shell \
-  --num-executors 14 \
+  --num-executors 12 \
   --name tpch_gen_parquet \
   --executor-memory 25g \
   --executor-cores 8 \
@@ -17,5 +17,5 @@ cat tpch_datagen_parquet.scala | ${SPARK_HOME}/bin/spark-shell \
   --conf spark.sql.broadcastTimeout=4800 \
   --conf spark.driver.maxResultSize=4g \
   --conf spark.sql.sources.useV1SourceList=avro \
-  --conf spark.sql.shuffle.partitions=224 \
+  --conf spark.sql.shuffle.partitions=96 \
   --jars ${spark_sql_perf_jar}
