@@ -194,6 +194,7 @@ std::shared_ptr<const velox::core::PlanNode> VeloxBackend::getVeloxPlanNode(cons
     }
   }
   auto planNode = subVeloxPlanConverter_->toVeloxPlan(splan);
+  std::cerr << "Spark substrait plan: " << splan.DebugString() <<std::endl;
 #ifdef GLUTEN_PRINT_DEBUG
   std::cout << "Plan Node: " << std::endl << planNode->toString(true, true) << std::endl;
 #endif

@@ -8,7 +8,13 @@
 #include "velox/connectors/hive/HiveConnectorSplit.h"
 #include "velox/exec/PlanNodeStats.h"
 
+#include "src/CiderVeloxPluginCtx.h"
+#include "velox/exec/tests/utils/PlanBuilder.h"
+#include "velox/type/Type.h"
+#include "velox/parse/TypeResolver.h"
+
 using namespace facebook;
+using namespace facebook::velox;
 
 namespace gluten {
 
@@ -250,7 +256,16 @@ WholeStageResultIteratorFirstStage::WholeStageResultIteratorFirstStage(
   // Set task parameters.
   velox::core::PlanFragment planFragment{planNode, velox::core::ExecutionStrategy::kUngrouped, 1};
   std::shared_ptr<velox::core::QueryCtx> queryCtx = createNewVeloxQueryCtx(getConnectorConfig(), getPool());
+  auto rootNode = planFragment.planNode;
+  std::cerr << "node tree is " << rootNode->toString(true, true) << std::endl;
 
+  if(false) {
+    facebook::velox::plugin::CiderVeloxPluginCtx::init("/workspace/BDTK/cpp/src/cider/exec/plan/lookup/");
+    std::cerr << "Init done" << std::endl;
+    planFragment.planNode = facebook::velox::plugin::CiderVeloxPluginCtx::transformVeloxPlan(rootNode);
+    std::cerr << "transfer done. plan is" << planFragment.planNode->toString(true, true) << std::endl;
+  }
+ 
   // Set customized confs to query context.
   setConfToQueryContext(queryCtx);
   task_ = std::make_shared<velox::exec::Task>(
